@@ -30,22 +30,30 @@ class Brain(nn.Module):
         x = F.relu(self.fc1(x))
         return self.fc2(x)
 
-    def train_step(self, states, actions, rewards, next_states, dones, gamma=0.99):
+    def train_step(self, states, actions, rewards, next_states, dones):
         self.train()
         
-        # Текущие Q-значения
-        current_q = self.forward(states).gather(1, actions.unsqueeze(1)).squeeze(1)
+        # --- ИСПРАВЛЕНИЕ ТУТ ---
+        # Вызываем forward и проверяем, что он вернул
+        result = self.forward(states)
+        # Если пришел кортеж (как в RNN), берем только первый элемент (Q-значения)
+        current_q_values = result[0] if isinstance(result, tuple) else result
         
-        # Целевые Q-значения Беллман - идём в max(бенефит сейчас, бенефит нового состояния) 
+        # Теперь спокойно вызываем gather
+        current_q = current_q_values.gather(1, actions.unsqueeze(1)).squeeze(1)
+        
         with torch.no_grad():
-            next_q = self.forward(next_states).max(1)[0]
-            target_q = rewards + (gamma * next_q * (~dones))
+            next_result = self.forward(next_states)
+            next_q_values = next_result[0] if isinstance(next_result, tuple) else next_result
+            max_next_q = next_q_values.max(1)[0]
+            target_q = rewards + (1 - dones.float()) * 0.99 * max_next_q
             
         loss = F.mse_loss(current_q, target_q)
         
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
+        
         return loss.item()
 
     def split_channels(self, view):
