@@ -79,5 +79,3 @@ class RecurrentBrain(Brain):
             
             action = torch.argmax(logits).item()
             return action, next_hidden
-
-# ЕСЛИ НЕ ЯСНА ЛОГИКА - ПИСАТЬ В ТГ, А НЕ КОММЕНТАРИИ В КОДЕ

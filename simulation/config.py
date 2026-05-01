@@ -8,7 +8,7 @@ CELL_SIZE = 40
 
 WIDTH = COLS * CELL_SIZE
 HEIGHT = ROWS * CELL_SIZE
-FPS = 10
+FPS = 15
 
 # Цвета
 COLOR_BG = (30, 30, 30)
@@ -19,9 +19,9 @@ COLOR_FOOD = (255, 50, 50)
 
 # Множество объектов 
 class Entity(IntEnum):
-    EMPTY = 0
-    WALL = 1
-    AGENT = 2
+    EMPTY = 0  # Пустота
+    WALL = 1   # Стена
+    AGENT = 2  # 
     FOOD = 3
 
 # Платформа обучения

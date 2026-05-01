@@ -36,7 +36,7 @@ class Simulation:
             print("RUNNING: CNN MODE")
             self.shared_brain = Brain(INPUT_CHANELS, NUM_ACTIONS).to(DEVICE)
             self.memory = ReplayBuffer(MEMORY_SIZE, DEVICE)
-            self.weight_file = "cnn_weights.pth"
+            self.weight_file = "cnn_weights_1000000.pth"
             
         self.shared_brain.load(self.weight_file)
         self.epsilon = 0.15 
@@ -56,7 +56,7 @@ class Simulation:
     def update_logic(self):
         # МЕНЯТЬ ПО ХОДУ ОБУЧЕНИЯ
         if len(self.env.food_set) < 10:
-            self.env.spawn_food(5)
+            self.env.spawn_food(10)
 
         for agent in self.agents[:]:
             state_matrix = agent.get_view(self.env.world_map)
